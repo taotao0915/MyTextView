@@ -8,8 +8,10 @@
     <com.qzh.textview.MyTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:mText="自定义TextView"
+        app:mText="Test Test"
         app:mTextColor="@color/colorAccent"
-        android:background="@color/colorPrimary"/>
+        app:mTextSize="60sp"
+        android:background="@color/colorPrimary"
+        android:padding="10dp"/>
 
 </LinearLayout>

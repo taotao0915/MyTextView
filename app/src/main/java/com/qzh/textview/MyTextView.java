@@ -6,13 +6,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.LinearLayout;
+
 import androidx.annotation.Nullable;
 
 public class MyTextView extends View {
     private String mText;
     private int mTextColor;
-    private int mTextSize;
+    private int mTextSize = 15;
 
     private Paint mPaint;
 
@@ -30,8 +33,8 @@ public class MyTextView extends View {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MyTextView);
 
         mText = typedArray.getString(R.styleable.MyTextView_mText);
-        mTextColor = typedArray.getInt(R.styleable.MyTextView_mTextColor,mTextColor);
-        mTextSize = typedArray.getInt(R.styleable.MyTextView_mTextSize,mTextSize);
+        mTextColor = typedArray.getColor(R.styleable.MyTextView_mTextColor,mTextColor);
+        mTextSize = typedArray.getDimensionPixelSize(R.styleable.MyTextView_mTextSize,spToPx(mTextSize));
 
         typedArray.recycle();
 
@@ -40,6 +43,10 @@ public class MyTextView extends View {
         mPaint.setTextSize(mTextSize);
         mPaint.setColor(mTextColor);
 
+    }
+
+    private int spToPx(int sp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,sp,getResources().getDisplayMetrics());
     }
 
     @Override
@@ -54,7 +61,7 @@ public class MyTextView extends View {
             //计算宽度，与字体的长度、大小有关，用画笔来测量
             Rect bounds = new Rect();
             mPaint.getTextBounds(mText,0,mText.length(),bounds);
-            width = bounds.width();
+            width = bounds.width() + getPaddingLeft() + getPaddingRight();
         }
 
 
@@ -63,7 +70,7 @@ public class MyTextView extends View {
             //计算宽度，与字体的长度、大小有关，用画笔来测量
             Rect bounds = new Rect();
             mPaint.getTextBounds(mText,0,mText.length(),bounds);
-            height = bounds.height();
+            height = bounds.height() + getPaddingTop() + getPaddingBottom();
         }
 
         //设置控件的宽高
@@ -74,5 +81,10 @@ public class MyTextView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        Paint.FontMetricsInt fontMetrics = mPaint.getFontMetricsInt();
+        int dy = (fontMetrics.bottom-fontMetrics.top)/2 - fontMetrics.bottom;//基线到中线的距离
+        int baseLine = getHeight()/2+dy;
+        int x = getPaddingLeft();
+        canvas.drawText(mText,x,baseLine,mPaint);
     }
 }
